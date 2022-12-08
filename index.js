@@ -1,3 +1,7 @@
+// import { EventEmitter } from "node:events";
+import "./nwd.js";
+
+import { commandsEmitter, EVENTS_LIST } from "./emitter.js";
 import process from "node:process";
 
 const getUserNameFromArgs = (args) => {
@@ -14,7 +18,15 @@ const username = getUserNameFromArgs(startArguments);
 
 console.log(`Welcome to the File Manager, ${username}!`);
 
-process.stdin.setEncoding("utf8").on("data", (command) => {});
+process.stdin.setEncoding("utf8").on("data", (command) => {
+  const [operation, ...other] = command.trim().split(" ");
+
+  if (!EVENTS_LIST.includes(operation)) {
+    throw new Error("Some error");
+  }
+
+  commandsEmitter.emit(operation, other);
+});
 
 process.on("SIGINT", () => {
   console.log(`Thank you for using File Manager, ${username}, goodbye!`);

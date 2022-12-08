@@ -1,4 +1,5 @@
 import { commandsEmitter } from "./emitter.js";
+import { readdir, realpath } from "node:fs/promises";
 import store from "./store.js";
 import path from "node:path";
 
@@ -12,13 +13,39 @@ commandsEmitter.on("up", () => {
   store.trigger({ type: "SET_WORKING_DIR", payload: path.dirname(currentDir) });
 });
 
-commandsEmitter.on("cd", (args) => {
+commandsEmitter.on("cd", async (args) => {
   const [changeDirectoryTo] = args;
 
-  if (path.isAbsolute(changeDirectoryTo)) {
-    store.trigger({ type: "SET_WORKING_DIR", payload: changeDirectoryTo });
-  } else {
-    const newDir = path.resolve(currentDir, changeDirectoryTo);
-    store.trigger({ type: "SET_WORKING_DIR", payload: newDir });
+  let newDir = changeDirectoryTo;
+  if (!path.isAbsolute(changeDirectoryTo)) {
+    newDir = path.resolve(currentDir, changeDirectoryTo);
+  }
+
+  try {
+    newDir = await realpath(newDir);
+    console.log(newDir);
+  } catch (error) {
+    console.error("Invalid input");
+    return;
+  }
+
+  store.trigger({ type: "SET_WORKING_DIR", payload: newDir });
+});
+
+commandsEmitter.on("ls", async () => {
+  try {
+    const files = await readdir(currentDir, { withFileTypes: true });
+    const filesToDisplay = files.map((file) => {
+      return {
+        Name: file.name,
+        Type: file.isFile() ? "file" : "directory",
+      };
+    });
+
+    console.table(filesToDisplay);
+  } catch (err) {
+    if (err.code === "ENOENT") {
+      throw new Error("FS operation failed");
+    }
   }
 });

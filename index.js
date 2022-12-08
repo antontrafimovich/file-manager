@@ -8,6 +8,10 @@ import process from "node:process";
 const getUserNameFromArgs = (args) => {
   const usernameParam = args.find((arg) => arg.startsWith("--username"));
 
+  if (!usernameParam) {
+    return "anton";
+  }
+
   const [_, name] = usernameParam.split("=");
 
   return name;

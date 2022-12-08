@@ -11,3 +11,14 @@ store.onUpdate((state) => {
 commandsEmitter.on("up", () => {
   store.trigger({ type: "SET_WORKING_DIR", payload: path.dirname(currentDir) });
 });
+
+commandsEmitter.on("cd", (args) => {
+  const [changeDirectoryTo] = args;
+
+  if (path.isAbsolute(changeDirectoryTo)) {
+    store.trigger({ type: "SET_WORKING_DIR", payload: changeDirectoryTo });
+  } else {
+    const newDir = path.resolve(currentDir, changeDirectoryTo);
+    store.trigger({ type: "SET_WORKING_DIR", payload: newDir });
+  }
+});

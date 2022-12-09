@@ -32,7 +32,8 @@ process.stdin.setEncoding("utf8").on("data", (command) => {
   const [operation, ...other] = command.trim().split(" ");
 
   if (!EVENTS_LIST.includes(operation)) {
-    throw new Error("Some error");
+    console.error(`${operation} is unknown command`);
+    return;
   }
 
   commandsEmitter.emit(operation, other);

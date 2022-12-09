@@ -1,5 +1,5 @@
 import { commandsEmitter } from "./emitter.js";
-import { readdir, realpath } from "node:fs/promises";
+import { access, readdir, constants } from "node:fs/promises";
 import store from "./store.js";
 import path from "node:path";
 
@@ -22,8 +22,7 @@ commandsEmitter.on("cd", async (args) => {
   }
 
   try {
-    newDir = await realpath(newDir);
-    console.log(newDir);
+    await access(newDir, constants.F_OK);
   } catch (error) {
     console.error("Invalid input");
     return;

@@ -1,5 +1,6 @@
 // import { EventEmitter } from "node:events";
 import "./nwd.js";
+import "./fs.js";
 
 import { commandsEmitter, EVENTS_LIST } from "./emitter.js";
 import store from "./store.js";

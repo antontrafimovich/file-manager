@@ -1,4 +1,5 @@
 import { createReadStream } from "node:fs";
+import { appendFile } from "node:fs/promises";
 import path from "node:path";
 import { stdout } from "node:process";
 import { pipeline } from "node:stream/promises";
@@ -29,6 +30,20 @@ commandsEmitter.on("cat", async (args) => {
       }),
       stdout
     );
+  } catch (error) {
+    console.error("Invalid input");
+  }
+});
+
+commandsEmitter.on("add", async (args) => {
+  const [filename] = args;
+
+  let filePath = path.resolve(currentDir, filename);
+
+  try {
+    await appendFile(filePath, "", {
+      flag: "ax",
+    });
   } catch (error) {
     console.error("Invalid input");
   }

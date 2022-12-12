@@ -1,5 +1,5 @@
 import { createReadStream, createWriteStream } from "node:fs";
-import { appendFile, rename, lstat } from "node:fs/promises";
+import { appendFile, rename, lstat, rm } from "node:fs/promises";
 import path from "node:path";
 import { stdout } from "node:process";
 import { pipeline } from "node:stream/promises";
@@ -111,6 +111,28 @@ commandsEmitter.on("cp", async (args) => {
       createReadStream(fileToCopyPath),
       createWriteStream(fileToPastePath)
     );
+  } catch (error) {
+    console.error("Invalid input");
+  }
+});
+
+commandsEmitter.on("rm", async (args) => {
+  const [pathToFile] = args;
+
+  const resolvedPathToFile = path.resolve(currentDir, pathToFile);
+
+  try {
+    const fileStat = await lstat(resolvedPathToFile);
+    if (!fileStat.isFile()) {
+      throw new Error("The path is not a file");
+    }
+  } catch (err) {
+    console.log("Invalid input");
+    return;
+  }
+
+  try {
+    await rm(resolvedPathToFile);
   } catch (error) {
     console.error("Invalid input");
   }

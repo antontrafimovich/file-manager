@@ -1,5 +1,5 @@
 import { createReadStream, createWriteStream } from "node:fs";
-import { appendFile, rename, lstat, rm } from "node:fs/promises";
+import { appendFile, rename, lstat, rm as fsRm } from "node:fs/promises";
 import path from "node:path";
 import { stdout } from "node:process";
 import { pipeline } from "node:stream/promises";
@@ -75,7 +75,7 @@ commandsEmitter.on("rn", async (args) => {
   }
 });
 
-commandsEmitter.on("cp", async (args) => {
+const copy = async (args) => {
   const [pathToFile, pathToDirectory] = args;
 
   const fileToCopyPath = path.resolve(currentDir, pathToFile);
@@ -114,9 +114,11 @@ commandsEmitter.on("cp", async (args) => {
   } catch (error) {
     console.error("Invalid input");
   }
-});
+};
 
-commandsEmitter.on("rm", async (args) => {
+commandsEmitter.on("cp", copy);
+
+const rm = async (args) => {
   const [pathToFile] = args;
 
   const resolvedPathToFile = path.resolve(currentDir, pathToFile);
@@ -132,8 +134,20 @@ commandsEmitter.on("rm", async (args) => {
   }
 
   try {
-    await rm(resolvedPathToFile);
+    await fsRm(resolvedPathToFile);
   } catch (error) {
     console.error("Invalid input");
+  }
+};
+
+commandsEmitter.on("rm", rm);
+
+commandsEmitter.on("mv", async (args) => {
+  try {
+    await copy(args);
+    await rm(args);
+  } catch (err) {
+    console.log("Invalid input");
+    return;
   }
 });

@@ -31,6 +31,10 @@ store.onUpdate((state) => {
 process.stdin.setEncoding("utf8").on("data", (command) => {
   const [operation, ...other] = command.trim().split(" ");
 
+  if (operation === ".exit") {
+    process.exit(process.exitCode);
+  }
+
   if (!EVENTS_LIST.includes(operation)) {
     console.error(`${operation} is unknown command`);
     return;
@@ -39,7 +43,10 @@ process.stdin.setEncoding("utf8").on("data", (command) => {
   commandsEmitter.emit(operation, other);
 });
 
-process.on("SIGINT", () => {
-  console.log(`Thank you for using File Manager, ${username}, goodbye!`);
-  process.exit();
-});
+process
+  .on("SIGINT", () => {
+    process.exit();
+  })
+  .on("exit", () => {
+    console.log(`Thank you for using File Manager, ${username}, goodbye!`);
+  });

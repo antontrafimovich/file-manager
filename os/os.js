@@ -1,4 +1,4 @@
-import { EOL, cpus } from "node:os";
+import { EOL, cpus, homedir } from "node:os";
 
 const OPTIONS_LIST = [
   "--EOL",
@@ -20,6 +20,10 @@ export const os = (option) => {
   if (option === "--cpus") {
     return printCPUSInfo();
   }
+
+  if (option === "--homedir") {
+    return printHomedir();
+  }
 };
 
 const printEOL = () => {
@@ -39,4 +43,8 @@ const printCPUSInfo = () => {
   });
 
   console.table(cpusTableFormat);
+};
+
+const printHomedir = () => {
+  console.table(`Home directory: ${homedir}`);
 };

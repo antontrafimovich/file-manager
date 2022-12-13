@@ -12,4 +12,4 @@ export const EVENTS_LIST = [
   "mv",
 ];
 
-export const commandsEmitter = new EventEmitter();
+export const commandsEmitter = new EventEmitter().on('error', error => console.log(error.message));

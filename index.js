@@ -1,10 +1,10 @@
-// import { EventEmitter } from "node:events";
-import "./nwd.js";
-import "./fs.js";
+import "./fs/index.js";
+import "./nwd/index.js";
+
+import process from "node:process";
 
 import { commandsEmitter, EVENTS_LIST } from "./emitter.js";
 import store from "./store.js";
-import process from "node:process";
 
 const getUserNameFromArgs = (args) => {
   const usernameParam = args.find((arg) => arg.startsWith("--username"));

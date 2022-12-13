@@ -10,6 +10,9 @@ export const EVENTS_LIST = [
   "cp",
   "rm",
   "mv",
+  "os",
 ];
 
-export const commandsEmitter = new EventEmitter().on('error', error => console.log(error.message));
+export const commandsEmitter = new EventEmitter().on("error", (error) =>
+  console.log(error.message)
+);

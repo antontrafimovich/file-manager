@@ -1,5 +1,6 @@
 import "./fs/index.js";
 import "./nwd/index.js";
+import "./os/index.js";
 
 import process from "node:process";
 

@@ -1,4 +1,4 @@
-import { EOL } from "node:os";
+import { EOL, cpus } from "node:os";
 
 const OPTIONS_LIST = [
   "--EOL",
@@ -16,8 +16,27 @@ export const os = (option) => {
   if (option === "--EOL") {
     return printEOL();
   }
+
+  if (option === "--cpus") {
+    return printCPUSInfo();
+  }
 };
 
 const printEOL = () => {
   console.log(JSON.stringify(EOL));
+};
+
+const printCPUSInfo = () => {
+  const cpusInfo = cpus();
+
+  console.log(`There're ${cpusInfo.length} CPUS:`);
+
+  const cpusTableFormat = cpusInfo.map((cpu) => {
+    return {
+      Model: cpu.model,
+      "Clock Rate": `${cpu.speed / 1000} GHz`,
+    };
+  });
+
+  console.table(cpusTableFormat);
 };

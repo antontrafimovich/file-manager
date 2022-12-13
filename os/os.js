@@ -1,4 +1,4 @@
-import { EOL, cpus, homedir, userInfo } from "node:os";
+import { EOL, cpus, homedir, userInfo, arch } from "node:os";
 
 const OPTIONS_LIST = [
   "--EOL",
@@ -28,6 +28,10 @@ export const os = (option) => {
   if (option === "--username") {
     return printUsername();
   }
+
+  if (option === "--architecture") {
+    return printArchitecture();
+  }
 };
 
 const printEOL = () => {
@@ -55,4 +59,8 @@ const printHomedir = () => {
 
 const printUsername = () => {
   console.table(`Username: ${userInfo().username}`);
+};
+
+const printArchitecture = () => {
+  console.table(`Architecture: ${arch()}`);
 };

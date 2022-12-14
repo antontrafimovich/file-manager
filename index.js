@@ -1,4 +1,5 @@
 import "./fs/index.js";
+import "./hash/index.js";
 import "./nwd/index.js";
 import "./os/index.js";
 

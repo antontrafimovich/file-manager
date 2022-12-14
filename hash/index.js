@@ -1,5 +1,5 @@
 import { commandsEmitter } from "../emitter.js";
-import { os } from "./os.js";
+import { hash } from "./hash.js";
 
 const execute = async (command) => {
   try {
@@ -9,4 +9,4 @@ const execute = async (command) => {
   }
 };
 
-commandsEmitter.on("os", ([option]) => execute(() => os(option)));
+commandsEmitter.on("hash", ([pathToFile]) => execute(() => hash(pathToFile)));

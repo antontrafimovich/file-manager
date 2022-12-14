@@ -11,6 +11,7 @@ export const EVENTS_LIST = [
   "rm",
   "mv",
   "os",
+  "hash",
 ];
 
 export const commandsEmitter = new EventEmitter().on("error", (error) =>

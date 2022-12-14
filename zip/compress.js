@@ -21,7 +21,6 @@ export const compress = async (pathToFile, pathToDestination) => {
   try {
     await pipeline(r, brotli, w);
   } catch (error) {
-    console.log(error);
     throw new Error("Invalid input");
   }
 };

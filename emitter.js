@@ -13,6 +13,7 @@ export const EVENTS_LIST = [
   "os",
   "hash",
   "compress",
+  "decompress",
 ];
 
 export const commandsEmitter = new EventEmitter().on("error", (error) =>

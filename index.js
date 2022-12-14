@@ -2,6 +2,7 @@ import "./fs/index.js";
 import "./hash/index.js";
 import "./nwd/index.js";
 import "./os/index.js";
+import "./zip/index.js";
 
 import process from "node:process";
 

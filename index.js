@@ -27,12 +27,68 @@ const username = getUserNameFromArgs(startArguments);
 
 console.log(`Welcome to the File Manager, ${username}!`);
 
+let currentDir = "";
+
 store.onUpdate((state) => {
-  console.log(`Current directory is ${state.workingDirectory}`);
+  currentDir = state.workingDirectory;
 });
 
+const showCurrentDir = (currentDir) => {
+  console.log(`Current directory is ${currentDir}`);
+};
+
+commandsEmitter.on("commandEnd", () => {
+  showCurrentDir(currentDir);
+});
+
+showCurrentDir(currentDir);
+
+const parseCommand = (command) => {
+  var splitRegexp = /[^\s"']+|"([^"]*)"|'([^']*)'/gi;
+
+  let match;
+
+  let operation;
+
+  let argumentPart = "";
+  const args = [];
+
+  do {
+    match = splitRegexp.exec(command);
+    if (match === null) {
+      continue;
+    }
+
+    if (match[0] && !operation) {
+      operation = match[0];
+      continue;
+    }
+
+    if (match[0] && !(match[1] || match[2])) {
+      argumentPart = match[0];
+      continue;
+    }
+
+    if ((match[1] || match[2]) && argumentPart) {
+      const fullArg = `${argumentPart}${match[1] || match[2]}`;
+      argumentPart = null;
+      args.push(fullArg);
+      continue;
+    }
+
+    if (match[1] || match[2]) {
+      args.push(match[1] || match[2]);
+    }
+  } while (match != null);
+
+  return {
+    operation,
+    args,
+  };
+};
+
 process.stdin.setEncoding("utf8").on("data", (command) => {
-  const [operation, ...other] = command.trim().split(" ");
+  const { operation, args } = parseCommand(command.trim());
 
   if (operation === ".exit") {
     process.exit(process.exitCode);
@@ -43,7 +99,7 @@ process.stdin.setEncoding("utf8").on("data", (command) => {
     return;
   }
 
-  commandsEmitter.emit(operation, other);
+  commandsEmitter.emit(operation, args);
 });
 
 process

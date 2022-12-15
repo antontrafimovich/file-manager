@@ -11,6 +11,8 @@ const execute = async (command) => {
     await command();
   } catch (error) {
     commandsEmitter.emit("error", error);
+  } finally {
+    commandsEmitter.emit("commandEnd");
   }
 };
 

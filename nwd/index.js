@@ -7,12 +7,14 @@ const execute = async (command) => {
   try {
     await command();
   } catch (error) {
-    commandsEmitter.emit("error", error);
+    commandsEmitter.emit("error", { message: "Invalid Input" });
+  } finally {
+    commandsEmitter.emit("commandEnd");
   }
 };
 
 commandsEmitter
-  .on("up", () => up())
+  .on("up", () => execute(() => up()))
   .on("cd", async ([changeDirectoryTo]) => {
     execute(() => cd(changeDirectoryTo));
   })

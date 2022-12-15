@@ -1,4 +1,4 @@
-import { access, constants } from "node:fs/promises";
+import { lstat } from "node:fs/promises";
 import path from "node:path";
 
 import store from "./../store.js";
@@ -10,13 +10,18 @@ store.onUpdate((state) => {
 });
 
 export const cd = async (changeDirectoryTo) => {
-  let newDir = changeDirectoryTo;
-  if (!path.isAbsolute(changeDirectoryTo)) {
-    newDir = path.resolve(currentDir, changeDirectoryTo);
+  if (!changeDirectoryTo) {
+    throw new Error('Path to new directory must be valid');
   }
 
+  let newDir = path.resolve(currentDir, changeDirectoryTo);
+
   try {
-    await access(newDir, constants.F_OK);
+    const entry = await lstat(newDir);
+
+    if (!entry.isDirectory()) {
+      throw new Error("Invalid input");
+    }
   } catch (error) {
     throw new Error("Invalid input");
   }

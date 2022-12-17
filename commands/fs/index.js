@@ -8,18 +8,26 @@ import { rm } from "./rm.js";
 import { rn } from "./rn.js";
 
 commandsEmitter
-  .on("cat", (args) =>
+  .on("cat", (params) =>
     execute(async () => {
-      if (args.length > 1) {
+      if (params.length > 1) {
         throwInvalidInputError();
       }
 
-      const [pathToFile] = args;
+      const [pathToFile] = params;
       await cat(pathToFile);
     })
   )
-  .on("add", async ([fileName]) => {
-    execute(() => add(fileName));
+  .on("add", (params) => {
+    execute(async () => {
+      if (params.length > 1) {
+        throwInvalidInputError();
+      }
+
+      const [fileName] = params;
+
+      await add(fileName);
+    });
   })
   .on("rn", async ([pathToFile, newFileName]) => {
     execute(() => rn(pathToFile, newFileName));

@@ -30,7 +30,7 @@ process.stdin.setEncoding("utf8").on("data", (command) => {
     return commandsEmitter.emit("commandEnd");
   }
 
-  commandsEmitter.emit("error", throwInvalidInputError());
+  commandsEmitter.emit("error", new Error("Invalid input"));
 
   commandsEmitter.emit("commandEnd");
 });

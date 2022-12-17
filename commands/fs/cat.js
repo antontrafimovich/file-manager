@@ -5,10 +5,17 @@ import { stdout } from "node:process";
 import { Transform, Writable } from "node:stream";
 import { pipeline } from "node:stream/promises";
 
-import { throwOperationFailedError } from "../../utils/error.js";
+import {
+  throwInvalidInputError,
+  throwOperationFailedError,
+} from "../../utils/error.js";
 import { currentDir } from "./../../cwd.js";
 
 export const cat = async (pathToFile) => {
+  if (!pathToFile) {
+    throwInvalidInputError();
+  }
+
   const validPath = path.resolve(currentDir, pathToFile);
 
   const addEOL = new Transform({

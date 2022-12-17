@@ -18,7 +18,7 @@ commandsEmitter
       await cat(pathToFile);
     })
   )
-  .on("add", (params) => {
+  .on("add", (params) =>
     execute(async () => {
       if (params.length > 1) {
         throwInvalidInputError();
@@ -27,9 +27,9 @@ commandsEmitter
       const [fileName] = params;
 
       await add(fileName);
-    });
-  })
-  .on("rn", (params) => {
+    })
+  )
+  .on("rn", (params) =>
     execute(async () => {
       if (params.length > 2) {
         throwInvalidInputError();
@@ -37,11 +37,18 @@ commandsEmitter
 
       const [pathToFile, newFileName] = params;
       await rn(pathToFile, newFileName);
-    });
-  })
-  .on("cp", async ([pathToFile, pathToDirectory]) => {
-    execute(() => cp(pathToFile, pathToDirectory));
-  })
+    })
+  )
+  .on("cp", (params) =>
+    execute(async () => {
+      if (params.length > 2) {
+        throwInvalidInputError();
+      }
+
+      const [pathToFile, pathToDirectory] = params;
+      await cp(pathToFile, pathToDirectory);
+    })
+  )
   .on("rm", async ([pathToFile]) => {
     execute(() => rm(pathToFile));
   })

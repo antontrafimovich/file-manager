@@ -3,35 +3,41 @@ import { lstat } from "node:fs/promises";
 import path from "node:path";
 import { pipeline } from "node:stream/promises";
 
-import store from "../../store.js";
-
-let currentDir = "";
-
-store.onUpdate((state) => {
-  currentDir = state.workingDirectory;
-});
+import {
+  throwInvalidInputError,
+  throwOperationFailedError,
+} from "../../utils/error.js";
+import { currentDir } from "./../../cwd.js";
 
 export const cp = async (pathToFile, pathToDirectory) => {
+  if (pathToFile === undefined || pathToDirectory === undefined) {
+    throwInvalidInputError();
+  }
+
   const fileToCopyPath = path.resolve(currentDir, pathToFile);
 
+  let fileStat;
   try {
-    const fileStat = await lstat(fileToCopyPath);
-    if (!fileStat.isFile()) {
-      throw new Error("The path is not a file");
-    }
-  } catch (err) {
-    throw new Error("Invalid input");
+    fileStat = await lstat(fileToCopyPath);
+  } catch {
+    throw throwOperationFailedError();
+  }
+
+  if (!fileStat.isFile()) {
+    throwInvalidInputError();
   }
 
   const resolvedPathToDirectory = path.resolve(currentDir, pathToDirectory);
 
+  let pathToDirectoryStat;
   try {
-    const fileStat = await lstat(resolvedPathToDirectory);
-    if (!fileStat.isDirectory()) {
-      throw new Error("The path is not a directory");
-    }
-  } catch (err) {
-    throw new Error("Invalid input");
+    pathToDirectoryStat = await lstat(resolvedPathToDirectory);
+  } catch {
+    throwOperationFailedError();
+  }
+
+  if (!pathToDirectoryStat.isDirectory()) {
+    throwInvalidInputError();
   }
 
   const fileToCopyName = path.basename(fileToCopyPath);
@@ -44,6 +50,6 @@ export const cp = async (pathToFile, pathToDirectory) => {
       createWriteStream(fileToPastePath)
     );
   } catch (error) {
-    throw new Error("Invalid input");
+    throw throwOperationFailedError();
   }
 };

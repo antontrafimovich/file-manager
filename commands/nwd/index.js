@@ -16,6 +16,12 @@ commandsEmitter
       await cd(changeDirectoryTo);
     });
   })
-  .on("ls", () => {
-    execute(() => ls());
-  });
+  .on("ls", (params) =>
+    execute(async () => {
+      if (params.length > 0) {
+        throwInvalidInputError();
+      }
+
+      await ls();
+    })
+  );

@@ -1,6 +1,7 @@
 import { readdir } from "node:fs/promises";
 
 import { currentDir } from "../../cwd.js";
+import { throwOperationFailedError } from "../../utils/error.js";
 
 const sortEntriesAlphabetically = (arr) => {
   return [...arr].sort((a, b) => a.Name.localeCompare(b.Name));
@@ -9,6 +10,7 @@ const sortEntriesAlphabetically = (arr) => {
 export const ls = async () => {
   try {
     const directoryEntries = await readdir(currentDir, { withFileTypes: true });
+
     const { directories, files } = directoryEntries.reduce(
       (result, entry) => {
         if (entry.isFile()) {
@@ -42,9 +44,7 @@ export const ls = async () => {
     ];
 
     console.table(result);
-  } catch (err) {
-    if (err.code === "ENOENT") {
-      throw new Error("FS operation failed");
-    }
+  } catch {
+    throwOperationFailedError();
   }
 };

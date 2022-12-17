@@ -1,7 +1,7 @@
-import { commandsEmitter } from "../emitter.js";
-import { cd } from "./cd.js";
-import { ls } from "./ls.js";
-import { up } from "./up.js";
+import { commandsEmitter } from '../emitter.js';
+import { cd } from './cd.js';
+import { ls } from './ls.js';
+import { up } from './up.js';
 
 const execute = async (command) => {
   try {
@@ -15,8 +15,15 @@ const execute = async (command) => {
 
 commandsEmitter
   .on("up", () => execute(() => up()))
-  .on("cd", async ([changeDirectoryTo]) => {
-    execute(() => cd(changeDirectoryTo));
+  .on("cd", async (params) => {
+    execute(async () => {
+      if (params.length > 1) {
+        throw new Error("Invalid input");
+      }
+
+      const [changeDirectoryTo] = params;
+      await cd(changeDirectoryTo);
+    });
   })
   .on("ls", async () => {
     execute(() => ls());

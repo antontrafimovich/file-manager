@@ -4,12 +4,10 @@ import "./nwd/index.js";
 import "./os/index.js";
 import "./zip/index.js";
 
-import { getArgumentByKey } from "./utils/arguments.js";
-
-import { commandsEmitter, EVENTS_LIST } from "./emitter.js";
 import { currentDir } from "./cwd.js";
-
-const username = getArgumentByKey("--username") ?? "anton";
+import { commandsEmitter, EVENTS_LIST } from "./emitter.js";
+import { getArgumentByKey } from "./utils/arguments.js";
+import { parseCommandString } from "./utils/command.js";
 
 const showCurrentDir = (currentDir) => {
   console.log(`Current directory is ${currentDir}`);
@@ -19,46 +17,13 @@ commandsEmitter.on("commandEnd", () => {
   showCurrentDir(currentDir);
 });
 
+const username = getArgumentByKey("--username") ?? "anton";
 console.log(`Welcome to the File Manager, ${username}!`);
 
 showCurrentDir(currentDir);
 
-const parseCommand = (command) => {
-  const splitRegexp = /[^\s"']+|"([^"]*)"|'([^']*)'/gi;
-
-  let operation;
-  const args = [];
-
-  let match;
-  do {
-    match = splitRegexp.exec(command);
-
-    if (match === null) {
-      continue;
-    }
-
-    const matchedOperation = match[0] ?? match[1] ?? match[2];
-
-    if (matchedOperation && !operation) {
-      operation = matchedOperation;
-      continue;
-    }
-
-    const matchedArg = match[1] ?? match[2] ?? match[0];
-
-    if (matchedArg) {
-      args.push(matchedArg);
-    }
-  } while (match != null);
-
-  return {
-    operation,
-    args,
-  };
-};
-
 process.stdin.setEncoding("utf8").on("data", (command) => {
-  const { operation, args } = parseCommand(command.trim());
+  const { operation, args } = parseCommandString(command.trim());
 
   if (operation === ".exit") {
     process.exit(process.exitCode);

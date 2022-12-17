@@ -4,6 +4,7 @@ import { currentDir } from "./cwd.js";
 import { commandsEmitter, EVENTS_LIST, execute } from "./emitter.js";
 import { getArgumentByKey } from "./utils/arguments.js";
 import { parseCommandString } from "./utils/command.js";
+import { throwInvalidInputError } from "./utils/error.js";
 
 const showCurrentDir = (currentDir) => {
   console.log(`Current directory is ${currentDir}`);
@@ -29,7 +30,7 @@ process.stdin.setEncoding("utf8").on("data", (command) => {
     return commandsEmitter.emit("commandEnd");
   }
 
-  commandsEmitter.emit("error", new Error("Invalid input"));
+  commandsEmitter.emit("error", throwInvalidInputError());
 
   commandsEmitter.emit("commandEnd");
 });

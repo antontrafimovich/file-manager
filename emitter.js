@@ -1,4 +1,5 @@
 import { EventEmitter } from "node:events";
+import { logError } from "./utils/log.js";
 
 export const EVENTS_LIST = [
   "up",
@@ -27,7 +28,6 @@ export const execute = async (command) => {
   }
 };
 
-export const commandsEmitter = new EventEmitter().on(
-  "error",
-  (error) => console.log(error.message)
+export const commandsEmitter = new EventEmitter().on("error", (error) =>
+  logError(error.message)
 );

@@ -1,20 +1,10 @@
-import { commandsEmitter } from "../../emitter.js";
+import { commandsEmitter, execute } from "../../emitter.js";
 import { add } from "./add.js";
 import { cat } from "./cat.js";
 import { cp } from "./cp.js";
 import { mv } from "./mv.js";
 import { rm } from "./rm.js";
 import { rn } from "./rn.js";
-
-const execute = async (command) => {
-  try {
-    await command();
-  } catch (error) {
-    commandsEmitter.emit("error", error);
-  } finally {
-    commandsEmitter.emit("commandEnd");
-  }
-};
 
 commandsEmitter
   .on("cat", async ([pathToFile]) => {

@@ -1,11 +1,7 @@
-import "./fs/index.js";
-import "./hash/index.js";
-import "./nwd/index.js";
-import "./os/index.js";
-import "./zip/index.js";
+import "./commands/index.js";
 
 import { currentDir } from "./cwd.js";
-import { commandsEmitter, EVENTS_LIST } from "./emitter.js";
+import { commandsEmitter, EVENTS_LIST, execute } from "./emitter.js";
 import { getArgumentByKey } from "./utils/arguments.js";
 import { parseCommandString } from "./utils/command.js";
 
@@ -25,10 +21,6 @@ showCurrentDir(currentDir);
 process.stdin.setEncoding("utf8").on("data", (command) => {
   const { operation, args } = parseCommandString(command.trim());
 
-  if (operation === ".exit") {
-    process.exit(process.exitCode);
-  }
-
   if (EVENTS_LIST.includes(operation)) {
     return commandsEmitter.emit(operation, args);
   }
@@ -37,7 +29,8 @@ process.stdin.setEncoding("utf8").on("data", (command) => {
     return commandsEmitter.emit("commandEnd");
   }
 
-  console.error(`${operation} is unknown command`);
+  commandsEmitter.emit("error", new Error("Invalid input"));
+
   commandsEmitter.emit("commandEnd");
 });
 

@@ -1,4 +1,4 @@
-import { commandsEmitter } from "../emitter.js";
+import { commandsEmitter } from "../../emitter.js";
 import { compress } from "./compress.js";
 import { decompress } from "./decompress.js";
 

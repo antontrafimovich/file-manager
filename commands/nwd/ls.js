@@ -1,6 +1,6 @@
 import { readdir } from "node:fs/promises";
 
-import { currentDir } from "../cwd.js";
+import { currentDir } from "../../cwd.js";
 
 const sortEntriesAlphabetically = (arr) => {
   return [...arr].sort((a, b) => a.Name.localeCompare(b.Name));

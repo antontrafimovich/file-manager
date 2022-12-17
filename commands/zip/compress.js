@@ -3,7 +3,7 @@ import { pipeline } from "node:stream/promises";
 import { createBrotliCompress } from "node:zlib";
 import path from "node:path";
 
-import store from "./../store.js";
+import store from "./../../store.js";
 
 let currentDir = "";
 

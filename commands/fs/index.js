@@ -1,4 +1,4 @@
-import { commandsEmitter } from "../emitter.js";
+import { commandsEmitter } from "../../emitter.js";
 import { add } from "./add.js";
 import { cat } from "./cat.js";
 import { cp } from "./cp.js";

@@ -1,4 +1,4 @@
-import { commandsEmitter } from "../emitter.js";
+import { commandsEmitter } from "../../emitter.js";
 import { hash } from "./hash.js";
 
 const execute = async (command) => {

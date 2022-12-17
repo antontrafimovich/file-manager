@@ -1,11 +1,11 @@
-import { createReadStream } from 'node:fs';
-import { EOL } from 'node:os';
-import path from 'node:path';
-import { stdout } from 'node:process';
-import { Transform, Writable } from 'node:stream';
-import { pipeline } from 'node:stream/promises';
+import { createReadStream } from "node:fs";
+import { EOL } from "node:os";
+import path from "node:path";
+import { stdout } from "node:process";
+import { Transform, Writable } from "node:stream";
+import { pipeline } from "node:stream/promises";
 
-import store from './../store.js';
+import store from "./../../store.js";
 
 let currentDir = "";
 

@@ -1,7 +1,7 @@
 import { lstat, rm as fsRm } from "node:fs/promises";
 import path from "node:path";
 
-import store from "../store.js";
+import store from "../../store.js";
 
 let currentDir = "";
 

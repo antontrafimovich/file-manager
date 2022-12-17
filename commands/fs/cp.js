@@ -3,7 +3,7 @@ import { lstat } from "node:fs/promises";
 import path from "node:path";
 import { pipeline } from "node:stream/promises";
 
-import store from "../store.js";
+import store from "../../store.js";
 
 let currentDir = "";
 

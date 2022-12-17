@@ -2,7 +2,7 @@ import { readFile } from "fs/promises";
 import crypto from "node:crypto";
 import path from "node:path";
 
-import store from "./../store.js";
+import store from "./../../store.js";
 
 let currentDir = "";
 

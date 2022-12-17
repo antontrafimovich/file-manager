@@ -1,17 +1,15 @@
-import { rename } from "node:fs/promises";
+import { rename, lstat } from "node:fs/promises";
 import path from "node:path";
 
-import store from "../../store.js";
-
-let currentDir = "";
-
-store.onUpdate((state) => {
-  currentDir = state.workingDirectory;
-});
+import {
+  throwInvalidInputError,
+  throwOperationFailedError,
+} from "../../utils/error.js";
+import { currentDir } from "./../../cwd.js";
 
 export const rn = async (pathToFile, newFilename) => {
   if (!pathToFile || !newFilename) {
-    throw new Error("Invalid input");
+    throw throwInvalidInputError();
   }
 
   const originalFilePath = path.resolve(currentDir, pathToFile);
@@ -20,8 +18,14 @@ export const rn = async (pathToFile, newFilename) => {
   const newFilePath = path.resolve(originalFileDirname, newFilename);
 
   try {
+    const entry = await lstat(originalFilePath);
+
+    if (!entry.isFile()) {
+      throwOperationFailedError();
+    }
+
     await rename(originalFilePath, newFilePath);
   } catch (error) {
-    throw new Error("Invalid input");
+    throwOperationFailedError();
   }
 };

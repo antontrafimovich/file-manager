@@ -29,8 +29,15 @@ commandsEmitter
       await add(fileName);
     });
   })
-  .on("rn", async ([pathToFile, newFileName]) => {
-    execute(() => rn(pathToFile, newFileName));
+  .on("rn", (params) => {
+    execute(async () => {
+      if (params.length > 2) {
+        throwInvalidInputError();
+      }
+
+      const [pathToFile, newFileName] = params;
+      await rn(pathToFile, newFileName);
+    });
   })
   .on("cp", async ([pathToFile, pathToDirectory]) => {
     execute(() => cp(pathToFile, pathToDirectory));

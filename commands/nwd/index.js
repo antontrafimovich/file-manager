@@ -5,8 +5,16 @@ import { ls } from "./ls.js";
 import { up } from "./up.js";
 
 commandsEmitter
-  .on("up", () => execute(() => up()))
-  .on("cd", (params) => {
+  .on("up", (params) =>
+    execute(() => {
+      if (params.length > 0) {
+        throwInvalidInputError();
+      }
+
+      up();
+    })
+  )
+  .on("cd", (params) =>
     execute(async () => {
       if (params.length > 1) {
         throwInvalidInputError();
@@ -14,8 +22,8 @@ commandsEmitter
 
       const [changeDirectoryTo] = params;
       await cd(changeDirectoryTo);
-    });
-  })
+    })
+  )
   .on("ls", (params) =>
     execute(async () => {
       if (params.length > 0) {

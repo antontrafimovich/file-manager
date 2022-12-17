@@ -5,21 +5,19 @@ import { stdout } from "node:process";
 import { Transform, Writable } from "node:stream";
 import { pipeline } from "node:stream/promises";
 
-import store from "./../../store.js";
-
-let currentDir = "";
-
-store.onUpdate((state) => {
-  currentDir = state.workingDirectory;
-});
+import { throwOperationFailedError } from "../../utils/error.js";
+import { currentDir } from "./../../cwd.js";
 
 export const cat = async (pathToFile) => {
-  let validPath = path.resolve(currentDir, pathToFile);
+  const validPath = path.resolve(currentDir, pathToFile);
 
   const addEOL = new Transform({
     decodeStrings: false,
     transform(chunk, _, callback) {
-      callback(null, `${chunk}${EOL}`);
+      callback(null, chunk);
+    },
+    flush(callback) {
+      callback(null, EOL);
     },
   });
 
@@ -37,7 +35,7 @@ export const cat = async (pathToFile) => {
       addEOL,
       writeToConsole
     );
-  } catch (error) {
-    throw new Error("Invalid input");
+  } catch {
+    throwOperationFailedError();
   }
 };

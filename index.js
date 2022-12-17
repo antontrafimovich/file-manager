@@ -4,34 +4,12 @@ import "./nwd/index.js";
 import "./os/index.js";
 import "./zip/index.js";
 
-import process from "node:process";
+import { getArgumentByKey } from "./utils/arguments.js";
 
 import { commandsEmitter, EVENTS_LIST } from "./emitter.js";
-import store from "./store.js";
+import { currentDir } from "./cwd.js";
 
-const getUserNameFromArgs = (args) => {
-  const usernameParam = args.find((arg) => arg.startsWith("--username"));
-
-  if (!usernameParam) {
-    return "anton";
-  }
-
-  const [_, name] = usernameParam.split("=");
-
-  return name;
-};
-
-const startArguments = process.argv.slice(2);
-
-const username = getUserNameFromArgs(startArguments);
-
-console.log(`Welcome to the File Manager, ${username}!`);
-
-let currentDir = "";
-
-store.onUpdate((state) => {
-  currentDir = state.workingDirectory;
-});
+const username = getArgumentByKey("--username") ?? "anton";
 
 const showCurrentDir = (currentDir) => {
   console.log(`Current directory is ${currentDir}`);
@@ -41,43 +19,35 @@ commandsEmitter.on("commandEnd", () => {
   showCurrentDir(currentDir);
 });
 
+console.log(`Welcome to the File Manager, ${username}!`);
+
 showCurrentDir(currentDir);
 
 const parseCommand = (command) => {
-  var splitRegexp = /[^\s"']+|"([^"]*)"|'([^']*)'/gi;
-
-  let match;
+  const splitRegexp = /[^\s"']+|"([^"]*)"|'([^']*)'/gi;
 
   let operation;
-
-  let argumentPart = "";
   const args = [];
 
+  let match;
   do {
     match = splitRegexp.exec(command);
+
     if (match === null) {
       continue;
     }
 
-    if (match[0] && !operation) {
-      operation = match[0];
+    const matchedOperation = match[0] ?? match[1] ?? match[2];
+
+    if (matchedOperation && !operation) {
+      operation = matchedOperation;
       continue;
     }
 
-    if (match[0] && !(match[1] || match[2])) {
-      argumentPart = match[0];
-      continue;
-    }
+    const matchedArg = match[1] ?? match[2] ?? match[0];
 
-    if ((match[1] || match[2]) && argumentPart) {
-      const fullArg = `${argumentPart}${match[1] || match[2]}`;
-      argumentPart = null;
-      args.push(fullArg);
-      continue;
-    }
-
-    if (match[1] || match[2]) {
-      args.push(match[1] || match[2]);
+    if (matchedArg) {
+      args.push(matchedArg);
     }
   } while (match != null);
 
@@ -94,12 +64,16 @@ process.stdin.setEncoding("utf8").on("data", (command) => {
     process.exit(process.exitCode);
   }
 
-  if (!EVENTS_LIST.includes(operation)) {
-    console.error(`${operation} is unknown command`);
-    return;
+  if (EVENTS_LIST.includes(operation)) {
+    return commandsEmitter.emit(operation, args);
   }
 
-  commandsEmitter.emit(operation, args);
+  if (!operation) {
+    return commandsEmitter.emit("commandEnd");
+  }
+
+  console.error(`${operation} is unknown command`);
+  commandsEmitter.emit("commandEnd");
 });
 
 process

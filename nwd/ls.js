@@ -1,12 +1,6 @@
 import { readdir } from "node:fs/promises";
 
-import store from "./../store.js";
-
-let currentDir = "";
-
-store.onUpdate((state) => {
-  currentDir = state.workingDirectory;
-});
+import { currentDir } from "../cwd.js";
 
 const sortEntriesAlphabetically = (arr) => {
   return [...arr].sort((a, b) => a.Name.localeCompare(b.Name));

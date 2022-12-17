@@ -1,17 +1,12 @@
 import { lstat } from "node:fs/promises";
 import path from "node:path";
 
-import store from "./../store.js";
-
-let currentDir = "";
-
-store.onUpdate((state) => {
-  currentDir = state.workingDirectory;
-});
+import { currentDir } from "../cwd.js";
+import store from "../store.js";
 
 export const cd = async (changeDirectoryTo) => {
   if (!changeDirectoryTo) {
-    throw new Error('Path to new directory must be valid');
+    throw new Error("Path to new directory must be valid");
   }
 
   let newDir = path.resolve(currentDir, changeDirectoryTo);

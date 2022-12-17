@@ -3,5 +3,5 @@ export const throwOperationFailedError = () => {
 };
 
 export const throwInvalidInputError = () => {
-  throw new Error("Invalid nput");
+  throw new Error("Invalid input");
 };

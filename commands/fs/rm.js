@@ -1,29 +1,33 @@
 import { lstat, rm as fsRm } from "node:fs/promises";
 import path from "node:path";
 
-import store from "../../store.js";
-
-let currentDir = "";
-
-store.onUpdate((state) => {
-  currentDir = state.workingDirectory;
-});
+import { currentDir } from "../../cwd.js";
+import {
+  throwInvalidInputError,
+  throwOperationFailedError,
+} from "../../utils/error.js";
 
 export const rm = async (pathToFile) => {
+  if (pathToFile === undefined) {
+    throwInvalidInputError();
+  }
+
   const resolvedPathToFile = path.resolve(currentDir, pathToFile);
 
+  let fileStat;
   try {
-    const fileStat = await lstat(resolvedPathToFile);
-    if (!fileStat.isFile()) {
-      throw new Error("The path is not a file");
-    }
-  } catch (err) {
-    throw new Error("Invalid input");
+    fileStat = await lstat(resolvedPathToFile);
+  } catch {
+    throwOperationFailedError();
+  }
+
+  if (!fileStat.isFile()) {
+    throwInvalidInputError();
   }
 
   try {
     await fsRm(resolvedPathToFile);
-  } catch (error) {
-    throw new Error("Invalid input");
+  } catch {
+    throwOperationFailedError();
   }
 };

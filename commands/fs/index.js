@@ -49,9 +49,23 @@ commandsEmitter
       await cp(pathToFile, pathToDirectory);
     })
   )
-  .on("rm", async ([pathToFile]) => {
-    execute(() => rm(pathToFile));
-  })
-  .on("mv", async ([pathToFile, pathToDirectory]) => {
-    execute(() => mv(pathToFile, pathToDirectory));
-  });
+  .on("rm", (params) =>
+    execute(async () => {
+      if (params.length > 1) {
+        throwInvalidInputError();
+      }
+
+      const [pathToFile] = params;
+      await rm(pathToFile);
+    })
+  )
+  .on("mv", (params) =>
+    execute(async () => {
+      if (params.length > 2) {
+        throwInvalidInputError();
+      }
+
+      const [pathToFile, pathToDirectory] = params;
+      await mv(pathToFile, pathToDirectory);
+    })
+  );

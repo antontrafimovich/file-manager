@@ -16,6 +16,11 @@ export const rn = async (pathToFile, newFilename) => {
   const originalFileDirname = path.dirname(originalFilePath);
 
   const newFilePath = path.resolve(originalFileDirname, newFilename);
+  const newFileDirname = path.dirname(newFilePath);
+
+  if (originalFileDirname !== newFileDirname) {
+    throwInvalidInputError();
+  }
 
   try {
     const entry = await lstat(originalFilePath);

@@ -3,19 +3,23 @@ import path from "node:path";
 
 import { currentDir } from "../../cwd.js";
 import store from "../../store.js";
-import { throwOperationFailedError } from "../../utils/error.js";
+import {
+  throwInvalidInputError,
+  throwOperationFailedError,
+} from "../../utils/error.js";
 
 export const cd = async (changeDirectoryTo = "") => {
   const newDir = path.resolve(currentDir, changeDirectoryTo);
 
+  let entry;
   try {
-    const entry = await lstat(newDir);
-
-    if (!entry.isDirectory()) {
-      throwOperationFailedError();
-    }
+    entry = await lstat(newDir);
   } catch {
     throwOperationFailedError();
+  }
+
+  if (!entry.isDirectory()) {
+    throwInvalidInputError();
   }
 
   store.trigger({ type: "SET_WORKING_DIR", payload: newDir });

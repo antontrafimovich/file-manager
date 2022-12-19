@@ -1,12 +1,14 @@
-import { commandsEmitter } from "../../emitter.js";
+import { commandsEmitter, execute } from "../../emitter.js";
+import { throwInvalidInputError } from "../../utils/error.js";
 import { hash } from "./hash.js";
 
-const execute = async (command) => {
-  try {
-    await command();
-  } catch (error) {
-    commandsEmitter.emit("error", error);
-  }
-};
+commandsEmitter.on("hash", (params) =>
+  execute(async () => {
+    if (params.length > 1) {
+      throwInvalidInputError();
+    }
 
-commandsEmitter.on("hash", ([pathToFile]) => execute(() => hash(pathToFile)));
+    const [pathToFile] = params;
+    await hash(pathToFile);
+  })
+);

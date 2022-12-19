@@ -44,6 +44,16 @@ export const cp = async (pathToFile, pathToDirectory) => {
 
   const fileToPastePath = path.resolve(resolvedPathToDirectory, fileToCopyName);
 
+  let pathToPasteStat;
+
+  try {
+    pathToPasteStat = await lstat(fileToPastePath);
+  } catch {}
+
+  if (pathToPasteStat !== undefined) {
+    throwOperationFailedError();
+  }
+
   try {
     await pipeline(
       createReadStream(fileToCopyPath),

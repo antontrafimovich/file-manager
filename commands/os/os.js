@@ -1,4 +1,6 @@
-import { EOL, cpus, homedir, userInfo, arch } from "node:os";
+import { arch, cpus, EOL, homedir, userInfo } from "node:os";
+
+import { throwInvalidInputError } from "../../utils/error.js";
 
 const OPTIONS_LIST = [
   "--EOL",
@@ -10,7 +12,7 @@ const OPTIONS_LIST = [
 
 export const os = (option) => {
   if (!OPTIONS_LIST.includes(option)) {
-    throw new Error("Invalid input");
+    throwInvalidInputError();
   }
 
   if (option === "--EOL") {

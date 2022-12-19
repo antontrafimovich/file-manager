@@ -14,6 +14,13 @@ commandsEmitter
       await compress(pathToFile, pathToDestination);
     })
   )
-  .on("decompress", async ([pathToFile, pathToDestination]) => {
-    execute(() => decompress(pathToFile, pathToDestination));
-  });
+  .on("decompress", (params) =>
+    execute(async () => {
+      if (params.length > 2) {
+        throwInvalidInputError();
+      }
+
+      const [pathToFile, pathToDestination] = params;
+      await decompress(pathToFile, pathToDestination);
+    })
+  );

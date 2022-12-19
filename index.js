@@ -14,7 +14,7 @@ commandsEmitter.on("commandEnd", () => {
   showCurrentDir(currentDir);
 });
 
-const username = getArgumentByKey("--username") ?? "anton";
+const username = getArgumentByKey("--username") || "anonymous";
 console.log(`Welcome to the File Manager, ${username}!`);
 
 showCurrentDir(currentDir);

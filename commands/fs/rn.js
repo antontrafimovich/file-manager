@@ -35,6 +35,15 @@ export const rn = async (pathToFile, newFilename) => {
     throwInvalidInputError();
   }
 
+  let newFileStat;
+  try {
+    newFileStat = await lstat(newFilePath);
+  } catch {}
+
+  if (newFileStat) {
+    throwOperationFailedError();
+  }
+
   try {
     await rename(originalFilePath, newFilePath);
   } catch (error) {

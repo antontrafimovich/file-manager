@@ -6,6 +6,6 @@ export const mv = async (pathToFile, pathToDirectory) => {
     await cp(pathToFile, pathToDirectory);
     await rm(pathToFile);
   } catch (err) {
-    throw new Error("Invalid input");
+    throw err;
   }
 };

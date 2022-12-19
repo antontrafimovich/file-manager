@@ -14,6 +14,10 @@ export const add = async (fileName) => {
 
   const filePath = path.resolve(currentDir, fileName);
 
+  if (path.dirname(filePath) !== currentDir) {
+    throwInvalidInputError();
+  }
+
   try {
     await appendFile(filePath, "", {
       flag: "ax",
